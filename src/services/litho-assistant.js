@@ -11,31 +11,21 @@ const types = (stoneName) => {
 }
 
 const LithoAssistant = async (req, res) => {
-  const stoneName = req.body.stoneName;
   let nbWords = req.body.nbWords;
-
-  logger("LithoAssistant").info("LithoAssistant using " + models["chat/completions"]["gpt-3.5-turbo"] +
-    " searching description for: " + stoneName);
-
+  const prompt = req.body.prompt;
   let outputWanted = "";
 
-  if (stoneName === undefined || stoneName === "") {
-    logger("LithoAssistant").error("Bad request. Missing stoneName parameter.");
-    return res.status(400).send("Bad request. Missing stoneName parameter.");
+  if (prompt === undefined || prompt === "") {
+    logger("LithoAssistant").error("Bad request. Missing prompt parameter.");
+    return res.status(400).send("Bad request. Missing prompt parameter.");
+  }
+  logger("LithoAssistant").info("LithoAssistant using " + models["chat/completions"]["gpt-3.5-turbo"] +  "\n" + prompt);
+
+  if (nbWords !== undefined || nbWords !== "0") {
+    outputWanted += "The output will be limited to " + nbWords + " words. ";
   }
 
-  if (nbWords === undefined || nbWords === "") {
-    nbWords = 100;
-  }
-
-  outputWanted += "The output will be limited to " + nbWords + " words. ";
-
-  if (req.body.type === undefined || req.body.type === "") {
-    logger("LithoAssistant").error("Bad request. Missing type parameter.");
-    return res.status(400).send("Bad request. Missing type parameter.");
-  }
-
-  outputWanted += types(stoneName)[req.body.type];
+  outputWanted += prompt;
 
   const response = await OaiInstance.createChatCompletion({
     model: models["chat/completions"]["gpt-3.5-turbo"],
@@ -50,10 +40,7 @@ const LithoAssistant = async (req, res) => {
       }
     ]
   });
-
   logger("LithoAssistant").info("Response: " + response.data.choices[0].message.content);
-
-
   return res.status(200).json({
     output: response.data.choices[0].message.content
   });
