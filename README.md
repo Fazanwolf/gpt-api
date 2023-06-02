@@ -53,9 +53,8 @@ Endpoint to get information about a stone in lithotherapy.
 
 ```json
 {
-  "stoneName": "Name of your stone",
-  "nbWords": "Number of words wanted in the response", // optional, default: 100
-  "type": "Type of information wanted" // required, (can be "description", "chakra", "zodiac", "...")
+  "prompt": "The prompt that will be used to generate the response",
+  "nbWords": "Number of words wanted in the response" // optional, default: no limit
 }
 ```
 
