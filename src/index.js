@@ -9,8 +9,8 @@ const app = express();
 
 app.use(express.json());
 
-// app.post('/suggest', Suggest);
-// app.post('/litho-assistant', LithoAssistant);
+app.post('/suggest', Suggest);
+app.post('/litho-assistant', LithoAssistant);
 
 app.listen(process.env.PORT, () => {
   logger('index').info('Server is running on port ' + PORT);
